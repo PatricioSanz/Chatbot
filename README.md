@@ -1,54 +1,54 @@
-# 🤖 Chatbot Chileautos – Asistente de búsqueda de vehículos con IA
+# Chileautos
 
-El **Chatbot Chileautos** es una herramienta inteligente diseñada para ayudar a los usuarios a **encontrar vehículos** de acuerdo con sus requerimientos personales (marca, precio, año, ubicación, tipo de vehículo, etc.).  
-Su propósito es optimizar la experiencia de búsqueda mediante **inteligencia artificial y procesamiento de lenguaje natural (NLP)**, reduciendo el tiempo necesario para comparar opciones y centralizando la información en una sola plataforma.
+Chileautos es una demo local de un buscador de autos que usa Node.js + Express en el backend y una base de datos SQLite para almacenar los vehículos.
 
----
+-------------------------------------------------------
+🚗 Qué hace
+-------------------------------------------------------
+- Muestra autos desde una base de datos local (chileautos.db)
+- Permite filtrar por marca, tipo, año, precio y región
+- Usa un frontend HTML/CSS sencillo (sin frameworks)
+- Se ejecuta completamente de forma local
 
-## 🎯 Objetivos principales
+-------------------------------------------------------
+⚙️ Cómo hacerlo funcionar
+-------------------------------------------------------
+1. Instala dependencias:
+   npm install
 
-- Recibir y procesar requerimientos del usuario en **lenguaje natural**.  
-- Convertir las consultas en **filtros estructurados** (precio, marca, año, tipo, etc.).  
-- Consultar fuentes de datos o APIs de inventario en tiempo real.  
-- Entregar recomendaciones personalizadas y relevantes.  
-- Escalar el chatbot a distintos canales (web, WhatsApp, aplicación móvil).  
-- Aprender de las interacciones de los usuarios, respetando siempre la **privacidad de datos**.
+2. Crea la base de datos:
+   sqlite3 chileautos.db < db/schema.sql
+   sqlite3 chileautos.db < db/seed.sql
 
----
+3. Ejecuta el servidor:
+   npm run dev
 
-## ⚙️ Stack tecnológico sugerido
+4. Abre en tu navegador:
+   http://localhost:3000
 
-- **Backend:** Node.js. 
-- **NLP / LLM:** OpenAI API, Azure OpenAI o Cohere. (Verificar)  
-- **Base de datos:** PostgreSQL.  
-- **Infraestructura:** Render y Netlify.  
-- **Integración:** API REST.  
-- **Despliegue:** Render.  
+-------------------------------------------------------
+📁 Estructura
+-------------------------------------------------------
+chileautos/
+├─ package.json
+├─ server.js
+├─ chileautos.db
+├─ db/
+│  ├─ schema.sql
+│  └─ seed.sql
+└─ public/
+   ├─ index.html
+   ├─ styles.css
+   └─ images/
 
----
+-------------------------------------------------------
+🧩 Requisitos
+-------------------------------------------------------
+- Node.js 18 o superior
+- SQLite instalado (sqlite3 en terminal)
 
-## 📁 Estructura del repositorio
-
-```bash
-/docs
-  ARCHITECTURE.md
-  DATA_SCHEMA.md
-  PROMPTS.md
-  EVALUATION.md
-  SECURITY.md
-  DEPLOYMENT.md
-  ROADMAP.md
-/infra
-  docker-compose.yml
-/src
-  app/            # Punto de entrada del servidor
-  api/            # Endpoints REST o webhooks
-  bot/            # Lógica del flujo conversacional
-  nlp/            # Extracción de intención y entidades
-  providers/      # Conexión a APIs externas o LLMs
-  flows/          # Flujos de conversación (búsqueda, FAQ, fallback)
-  utils/          # Funciones de apoyo y logging
-/test
-.env.example
-CONTRIBUTING.md
-CODE_OF_CONDUCT.md
+-------------------------------------------------------
+✅ Listo
+-------------------------------------------------------
+Con esto puedes correr todo el proyecto localmente,
+cargar los datos de ejemplo y navegar en el buscador de autos.

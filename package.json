@@ -1,0 +1,13 @@
+{
+  "name": "chileautos",
+  "version": "1.0.0",
+  "description": "Chileautos - Buscador de autos",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.6.0",
+    "express": "^4.19.2"
+  }
+}

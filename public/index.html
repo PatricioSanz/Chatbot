@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chileautos — Compra y venta de autos</title>
+  <meta name="description" content="Explora autos usados y nuevos por marca, precio, año y ubicación en Chileautos." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav__in">
+      <div class="brand"><span class="brand__dot"></span>Chileautos</div>
+      <div class="nav__links">
+        <a href="#">Autos</a><a href="#">SUV</a><a href="#">Camionetas</a><a href="#">Motos</a><a href="#">Publica tu auto</a>
+      </div>
+      <div class="nav__cta">
+        <button class="btn">Ingresar</button>
+        <button class="btn btn--brand">Registrarse</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero__in">
+      <h1 class="hero__title">Encuentra tu próximo vehículo</h1>
+      <p class="hero__sub">Filtra por marca, precio, año y ubicación. Datos actualizados desde la base de Chileautos.</p>
+
+      <!-- FORMULARIO -->
+      <div class="search" id="searchForm">
+        <div class="fld fld--main">
+          <label class="lbl">¿Qué buscas?</label>
+          <input class="inp" id="q" type="text" placeholder="Ej: Toyota SUV, 2020, hasta 10 millones" />
+        </div>
+        <div class="fld">
+          <label class="lbl">Tipo</label>
+          <select class="sel" id="tipo">
+            <option value="">Todos</option>
+            <option value="sedan">Sedán</option>
+            <option value="hatchback">Hatchback</option>
+            <option value="suv">SUV</option>
+            <option value="pickup">Pickup</option>
+            <option value="moto">Moto</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label class="lbl">Marca</label>
+          <select class="sel" id="marca">
+            <option value="">Todas</option>
+            <option value="Toyota">Toyota</option>
+            <option value="Hyundai">Hyundai</option>
+            <option value="Kia">Kia</option>
+            <option value="Chevrolet">Chevrolet</option>
+            <option value="Suzuki">Suzuki</option>
+            <option value="Nissan">Nissan</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label class="lbl">Año desde</label>
+          <select class="sel" id="ymin">
+            <option value="">Cualquiera</option>
+            <script>
+              document.currentScript.insertAdjacentHTML('afterend',
+                Array.from({ length: 20 }, (_, i) => 2025 - i)
+                  .map(y => `<option value="${y}">${y}</option>`).join('')
+              );
+            </script>
+          </select>
+        </div>
+        <div class="fld">
+          <label class="lbl">Precio máx. (MM CLP)</label>
+          <select class="sel" id="pmax">
+            <option value="">Sin tope</option>
+            <option value="5">5</option><option value="8">8</option>
+            <option value="10">10</option><option value="15">15</option>
+            <option value="20">20</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label class="lbl">Región</label>
+          <select class="sel" id="region">
+            <option value="">Todas</option>
+            <option value="rm">RM</option>
+            <option value="valparaíso">Valparaíso</option>
+            <option value="biobío">Biobío</option>
+            <option value="araucanía">Araucanía</option>
+            <option value="los ríos">Los Ríos</option>
+          </select>
+        </div>
+        <div class="search__btn">
+          <button class="btn btn--brand" id="btnBuscar">Buscar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTADOS -->
+  <div class="wrap">
+    <div class="bar">
+      <div class="bar__left">
+        <strong id="count">0</strong> resultados
+        <span id="applied" style="display:none">· filtros aplicados</span>
+      </div>
+      <div class="bar__right">
+        <select class="sel--sm" id="sort">
+          <option value="recientes">Ordenar: Recientes</option>
+          <option value="precio-asc">Precio: menor a mayor</option>
+          <option value="precio-desc">Precio: mayor a menor</option>
+          <option value="anio-desc">Año: más nuevo</option>
+          <option value="anio-asc">Año: más antiguo</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <footer>
+    <div class="foot">
+      <div>© <span id="year"></span> Chileautos — Proyecto.</div>
+      <div>Condiciones · Privacidad · Soporte</div>
+    </div>
+  </footer>
+
+  <script>
+    const $ = (s) => document.querySelector(s);
+    const q = $('#q'), tipo = $('#tipo'), marca = $('#marca'), ymin = $('#ymin'),
+          pmax = $('#pmax'), region = $('#region'), sort = $('#sort'),
+          btnBuscar = $('#btnBuscar'), grid = $('#grid'),
+          count = $('#count'), applied = $('#applied');
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Renderiza una tarjeta
+    function card(item) {
+      const price = new Intl.NumberFormat('es-CL', {
+        style: 'currency', currency: 'CLP', maximumFractionDigits: 0
+      }).format(item.price_clp);
+      return `
+        <article class="card">
+          <div class="thumb"><img src="${item.img}" alt="${item.title}"></div>
+          <div class="card__body">
+            <div class="title">${item.title}</div>
+            <div class="meta">${item.brand} · ${item.model} · ${item.year}</div>
+            <div class="price">${price}</div>
+            <div class="meta">${item.type.toUpperCase()} · ${item.region.toUpperCase()}</div>
+          </div>
+        </article>
+      `;
+    }
+
+    async function buscarAutos() {
+      const params = {};
+      if (q.value) params.q = q.value;
+      if (tipo.value) params.type = tipo.value;
+      if (marca.value) params.brand = marca.value;
+      if (ymin.value) params.year_min = ymin.value;
+      if (pmax.value) params.price_max = Number(pmax.value) * 1_000_000;
+      if (region.value) params.region = region.value;
+      if (sort.value) params.sort = sort.value;
+
+      const query = new URLSearchParams(params).toString();
+      const res = await fetch(`/api/cars?${query}`);
+      const data = await res.json();
+
+      grid.innerHTML = data.items.length
+        ? data.items.map(card).join('')
+        : `<div class="card" style="grid-column:1/-1;text-align:center;padding:20px">
+            <div class="title">Sin resultados</div>
+            <div class="meta">Prueba con otros filtros o palabras clave.</div>
+          </div>`;
+
+      count.textContent = data.count;
+      applied.style.display = Object.keys(params).length ? 'inline' : 'none';
+    }
+
+    // Eventos
+    btnBuscar.addEventListener('click', buscarAutos);
+    [tipo, marca, ymin, pmax, region, sort].forEach(el => el.addEventListener('change', buscarAutos));
+
+    // Carga inicial
+    buscarAutos();
+  </script>
+  <script src="https://cdn.botpress.cloud/webchat/v3.3/inject.js"></script>
+  <script src="https://files.bpcontent.cloud/2025/10/22/22/20251022225949-C8V8EE1X.js" defer></script>
+</body>
+</html>
