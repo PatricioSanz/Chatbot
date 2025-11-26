@@ -115,6 +115,15 @@
     </div>
 
     <div class="grid" id="grid"></div>
+
+    <!-- PAGINACIÓN -->
+    <div class="pager" id="pager" hidden>
+      <button class="pager__btn" id="prevPage" aria-label="Página anterior">←</button>
+      <span class="pager__info">
+        Página <span id="pageCurrent">1</span> de <span id="pageTotal">1</span>
+      </span>
+      <button class="pager__btn" id="nextPage" aria-label="Página siguiente">→</button>
+    </div>
   </div>
 
   <footer>
@@ -129,9 +138,17 @@
     const q = $('#q'), tipo = $('#tipo'), marca = $('#marca'), ymin = $('#ymin'),
           pmax = $('#pmax'), region = $('#region'), sort = $('#sort'),
           btnBuscar = $('#btnBuscar'), grid = $('#grid'),
-          count = $('#count'), applied = $('#applied');
+          count = $('#count'), applied = $('#applied'),
+          pager = $('#pager'), prevPageBtn = $('#prevPage'),
+          nextPageBtn = $('#nextPage'), pageCurrent = $('#pageCurrent'),
+          pageTotal = $('#pageTotal');
 
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Estado de paginación
+    let currentItems = [];
+    let currentPage = 1;
+    const PAGE_SIZE = 12; // 4 x 3 por página
 
     // Renderiza una tarjeta
     function card(item) {
@@ -139,7 +156,6 @@
         style: 'currency', currency: 'CLP', maximumFractionDigits: 0
       }).format(item.price_clp);
 
-      // Generar slug: "Kia Sportage" → "kia-sportage"
       const slug = item.model
         .toLowerCase()
         .replace(/ /g, '-')
@@ -150,12 +166,40 @@
           <div class="thumb"><img src="${item.img}" alt="${item.title}"></div>
           <div class="card__body">
             <div class="title">${item.title}</div>
-            <div class="meta">${item.brand} · ${item.model} · ${item.year}</div>
+            <div class="meta">${item.brand} · ${item.year}</div>
             <div class="price">${price}</div>
             <div class="meta">${item.type.toUpperCase()} · ${item.region.toUpperCase()}</div>
           </div>
         </a>
       `;
+    }
+
+    function renderGrid() {
+      if (!currentItems.length) {
+        grid.innerHTML = `
+          <div class="nores">
+            <div class="title">Sin resultados</div>
+            <div class="meta">Prueba con otros filtros o palabras clave.</div>
+          </div>`;
+        pager.hidden = true;
+        return;
+      }
+
+      const totalPages = Math.max(1, Math.ceil(currentItems.length / PAGE_SIZE));
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const end = start + PAGE_SIZE;
+      const slice = currentItems.slice(start, end);
+
+      grid.innerHTML = slice.map(card).join('');
+
+      pager.hidden = totalPages <= 1;
+      pageCurrent.textContent = String(currentPage);
+      pageTotal.textContent = String(totalPages);
+
+      prevPageBtn.disabled = currentPage === 1;
+      nextPageBtn.disabled = currentPage === totalPages;
     }
 
     async function buscarAutos() {
@@ -172,24 +216,49 @@
       const res = await fetch(`/api/cars?${query}`);
       const data = await res.json();
 
-      grid.innerHTML = data.items.length
-        ? data.items.map(card).join('')
-        : `<div class="card" style="grid-column:1/-1;text-align:center;padding:20px">
-            <div class="title">Sin resultados</div>
-            <div class="meta">Prueba con otros filtros o palabras clave.</div>
-          </div>`;
+      currentItems = data.items || [];
+      currentPage = 1;
 
-      count.textContent = data.count;
+      count.textContent = data.count ?? currentItems.length;
       applied.style.display = Object.keys(params).length ? 'inline' : 'none';
+
+      renderGrid();
+    }
+
+    // Debounce para buscar mientras escribes
+    let typingTimer;
+    function debounceBuscar() {
+      clearTimeout(typingTimer);
+      typingTimer = setTimeout(buscarAutos, 300);
     }
 
     // Eventos
     btnBuscar.addEventListener('click', buscarAutos);
-    [tipo, marca, ymin, pmax, region, sort].forEach(el => el.addEventListener('change', buscarAutos));
+    q.addEventListener('input', debounceBuscar);
+    [tipo, marca, ymin, pmax, region, sort].forEach(el =>
+      el.addEventListener('change', buscarAutos)
+    );
+
+    prevPageBtn.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderGrid();
+      }
+    });
+
+    nextPageBtn.addEventListener('click', () => {
+      const totalPages = Math.max(1, Math.ceil(currentItems.length / PAGE_SIZE));
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderGrid();
+      }
+    });
 
     // Carga inicial
     buscarAutos();
   </script>
+
+  <!-- Chatbot Botpress -->
   <script src="https://cdn.botpress.cloud/webchat/v3.3/inject.js"></script>
   <script src="https://files.bpcontent.cloud/2025/10/22/22/20251022225949-C8V8EE1X.js" defer></script>
 </body>

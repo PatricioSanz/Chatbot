@@ -2,18 +2,71 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Toyota Corolla - Detalles</title>
+  <title>Toyota Corolla 2018 - Detalles</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <header><a href="/">Volver al inicio</a></header>
+  <nav class="nav">
+    <div class="nav__in">
+      <div class="brand"><span class="brand__dot"></span>Chileautos</div>
+      <div class="nav__links">
+        <a href="/">Autos</a><a href="/">SUV</a><a href="/">Camionetas</a><a href="/">Motos</a><a href="#">Publica tu auto</a>
+      </div>
+      <div class="nav__cta">
+        <button class="btn">Ingresar</button>
+        <button class="btn btn--brand">Registrarse</button>
+      </div>
+    </div>
+  </nav>
 
-  <h1>Toyota Corolla</h1>
+  <main class="wrap detail">
+    <a href="/" class="back-link">← Volver a la búsqueda</a>
 
-  <p><strong>Marca:</strong> Toyota</p>
-  <p><strong>Modelo:</strong> Corolla</p>
+    <section class="detail__card">
+      <div class="detail__media">
+        <div class="detail__thumb">
+          <img src="/images/ToyotaCorolla2018.jpg" alt="Toyota Corolla 2018" />
+        </div>
+      </div>
 
-  <p>Página generada automáticamente.</p>
+      <div class="detail__info">
+        <h1 class="detail__title">Toyota Corolla 2018</h1>
+        <p class="detail__subtitle">Toyota · 2018</p>
 
+        <div class="detail__price-row">
+          <span class="detail__price">$7.800.000</span>
+          <span class="detail__badge">SEDÁN</span>
+        </div>
+
+        <dl class="detail__specs">
+          <div><dt>Marca</dt><dd>Toyota</dd></div>
+          <div><dt>Modelo</dt><dd>Corolla</dd></div>
+          <div><dt>Año</dt><dd>2018</dd></div>
+          <div><dt>Región</dt><dd>RM</dd></div>
+        </dl>
+
+        <p class="detail__desc">
+          Toyota Corolla 2018, sedán reconocido por su confiabilidad, confort y bajo costo de mantención,
+          perfecto para uso diario y viajes largos.
+        </p>
+
+        <div class="detail__actions">
+          <button class="btn btn--brand">Contactar vendedor</button>
+          <button class="btn btn--ghost">Guardar en favoritos</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot">
+      <div>© <span id="year"></span> Chileautos — Proyecto.</div>
+      <div>Condiciones · Privacidad · Soporte</div>
+    </div>
+  </footer>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="https://cdn.botpress.cloud/webchat/v3.3/inject.js"></script>
+  <script src="https://files.bpcontent.cloud/2025/10/22/22/20251022225949-C8V8EE1X.js" defer></script>
 </body>
 </html>
