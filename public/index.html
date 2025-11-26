@@ -138,8 +138,15 @@
       const price = new Intl.NumberFormat('es-CL', {
         style: 'currency', currency: 'CLP', maximumFractionDigits: 0
       }).format(item.price_clp);
+
+      // Generar slug: "Kia Sportage" → "kia-sportage"
+      const slug = item.model
+        .toLowerCase()
+        .replace(/ /g, '-')
+        .replace(/[^\w-]/g, '');
+
       return `
-        <article class="card">
+        <a class="card" href="/vehiculos/${slug}">
           <div class="thumb"><img src="${item.img}" alt="${item.title}"></div>
           <div class="card__body">
             <div class="title">${item.title}</div>
@@ -147,7 +154,7 @@
             <div class="price">${price}</div>
             <div class="meta">${item.type.toUpperCase()} · ${item.region.toUpperCase()}</div>
           </div>
-        </article>
+        </a>
       `;
     }
 
